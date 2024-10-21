@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { X, Upload, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -73,6 +74,7 @@ const SellForm = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("details");
   const [progress, setProgress] = useState(0);
+  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -167,6 +169,7 @@ const SellForm = () => {
         description: "Your product has been successfully uploaded!",
       });
       form.reset();
+      router.push("/market");
       setActiveTab("details");
     } catch (error) {
       console.error("Error uploading product:", error);
