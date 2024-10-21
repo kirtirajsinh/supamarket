@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Order" ADD COLUMN     "fid" INTEGER,
+ALTER COLUMN "userId" DROP NOT NULL;
