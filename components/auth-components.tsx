@@ -7,5 +7,12 @@ export function SignOut() {
 }
 
 export function SignIn() {
-  return <button onClick={() => Login("google")}>Sign In</button>;
+  return (
+    <button
+      className="bg-purple-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-purple-600 transition duration-300"
+      onClick={() => Login("google")}
+    >
+      Sign In
+    </button>
+  );
 }
