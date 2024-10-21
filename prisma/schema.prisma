@@ -103,7 +103,7 @@ model Order {
   fid              Int?
   isPaid           Boolean  @default(false)
   user             User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product          Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 enum Role {
