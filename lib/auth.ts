@@ -12,7 +12,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user }) {
+    async signIn() {
       // if (user.email === "kirrttiraj1907@gmail.com") {
       //   await prisma.user.update({
       //     where: { email: user.email },

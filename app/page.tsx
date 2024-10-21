@@ -1,6 +1,5 @@
 import LoginButton from "@/components/auth/LoginButton";
 import HeroSection from "@/components/landing/HeroSection";
-import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import Head from "next/head";
 
