@@ -20,8 +20,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ShoppingCart, Download, Info } from "lucide-react";
 import { ImageUrl } from "@/utils/const";
+import Image from "next/image";
 
 const ProductDisplay = ({ product }: { product: Product }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -53,10 +53,12 @@ const ProductDisplay = ({ product }: { product: Product }) => {
                 <CarouselItem key={index}>
                   <div className="p-1">
                     <div className="flex aspect-square items-center justify-center p-6">
-                      <img
+                      <Image
                         src={image ? `${ImageUrl}/${image}` : ""}
                         alt={`Product image ${index + 1}`}
                         className="w-full h-full object-cover rounded-lg"
+                        width={500}
+                        height={500}
                       />
                     </div>
                   </div>
@@ -102,7 +104,13 @@ const ProductDisplay = ({ product }: { product: Product }) => {
           </Tabs>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button>Share on Warpcast</Button>
+          <Button
+            onClick={() => {
+              window.open("https://warpcast.com", "_blank");
+            }}
+          >
+            Share on Warpcast
+          </Button>
         </CardFooter>
       </Card>
     </div>
