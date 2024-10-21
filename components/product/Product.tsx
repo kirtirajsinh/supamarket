@@ -11,7 +11,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -33,11 +32,9 @@ const ProductDisplay = ({ product }: { product: Product }) => {
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold">{product.name}</CardTitle>
-          <CardDescription>
-            <Badge variant="secondary" className="mr-2">
-              ${product.price} Ξ
-            </Badge>
-          </CardDescription>
+          <span>
+            <Badge>${product.price} Ξ</Badge>
+          </span>
         </CardHeader>
         <CardContent>
           <Carousel
@@ -56,7 +53,7 @@ const ProductDisplay = ({ product }: { product: Product }) => {
                       <Image
                         src={image ? `${ImageUrl}/${image}` : ""}
                         alt={`Product image ${index + 1}`}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full  rounded-lg object-contain"
                         width={500}
                         height={500}
                       />
