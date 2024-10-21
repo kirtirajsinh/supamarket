@@ -13,15 +13,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async signIn({ user }) {
-      if (user.email === "kirrttiraj1907@gmail.com") {
-        await prisma.user.update({
-          where: { email: user.email },
-          data: {
-            role: "ADMIN",
-          },
-        });
-      }
-      console.log(user, "user from auth");
+      // if (user.email === "kirrttiraj1907@gmail.com") {
+      //   await prisma.user.update({
+      //     where: { email: user.email },
+      //     data: {
+      //       role: "ADMIN",
+      //     },
+      //   });
+      // }
+      // console.log(user, "user from auth");
       return true;
     },
     async session({ session, user }) {
