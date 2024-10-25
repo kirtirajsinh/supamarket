@@ -16,11 +16,9 @@ datasource db {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String    @unique
+  address         String?    @unique
   emailVerified DateTime?
   image         String?
-  accounts      Account[]
-  sessions      Session[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   Orders        Order[]
@@ -28,44 +26,6 @@ model User {
   role          Role      @default(USER)
 }
 
-model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([provider, providerAccountId])
-}
-
-model Session {
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@id([identifier, token])
-}
 
 model Product {
   id                     String                 @id @default(uuid())
@@ -79,8 +39,8 @@ model Product {
   updatedAt              DateTime               @updatedAt
   orders                 Order[]
   productFiles           ProductFile[]
-  User                   User?                  @relation(fields: [userId], references: [id])
-  userId                 String?
+  User                   User?                  @relation(fields: [userAddress], references: [address])
+  userAddress            String?
   walletAddress          String
 }
 
@@ -98,11 +58,11 @@ model Order {
   pricePaidInCents Float
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  userId           String?
+  userAddress           String?
   productId        String
   fid              Int?
   isPaid           Boolean  @default(false)
-  user             User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User?     @relation(fields: [userAddress], references: [address], onDelete: Cascade)
   product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
