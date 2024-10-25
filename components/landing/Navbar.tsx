@@ -1,6 +1,6 @@
 import React from "react";
-import LoginButton from "../auth/LoginButton";
 import Link from "next/link";
+import ConnectButtonComponent from "../auth/ConnectButtonComponent";
 
 const NavBar = () => {
   return (
@@ -8,7 +8,7 @@ const NavBar = () => {
       <Link href="/" className="text-2xl font-bold">
         supamarket
       </Link>
-      <LoginButton />
+      <ConnectButtonComponent />
     </div>
   );
 };

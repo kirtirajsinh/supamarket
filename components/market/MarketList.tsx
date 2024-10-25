@@ -6,24 +6,7 @@ import { ImageUrl } from "@/utils/const";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { ArrowRight } from "lucide-react";
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string[];
-  coverImage: string;
-  description: string;
-  isAvailableForPurchase: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string | null;
-  walletAddress: string;
-  productFiles?: {
-    fileKey: string;
-    fileName?: string | null;
-  }[];
-}
+import type { Product } from "@/types/product";
 
 interface ProductListProps {
   products: Product[];

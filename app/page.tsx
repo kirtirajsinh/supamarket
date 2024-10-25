@@ -1,19 +1,14 @@
-import LoginButton from "@/components/auth/LoginButton";
+import ConnectButtonComponent from "@/components/auth/ConnectButtonComponent";
 import HeroSection from "@/components/landing/HeroSection";
-import { auth } from "@/lib/auth";
-import Head from "next/head";
+import { cookies } from "next/headers";
 
 export default async function Home() {
-  const session = await auth();
+  const cookieStore = await cookies();
+  const jwt = cookieStore.get("jwt");
 
   return (
     // <div className="flex min-h-screen flex-col text-primary-text">
     <div className=" flex flex-col items-center justify-center bg-white">
-      <Head>
-        <title>Supamarket - Sell Your Products in Frame</title>
-        <meta name="description" content="Sell your digital products easily." />
-      </Head>
-
       {/* Main Content */}
       <main className="flex flex-col items-center justify-center w-full px-4 py-8 text-center">
         <h1 className="text-8xl font-extrabold  mb-8 bg-gradient-to-r from-[#472A91] to-[#9E9696] text-transparent bg-clip-text">
@@ -44,7 +39,7 @@ export default async function Home() {
         </div>
 
         {/* Get Started Button */}
-        {session?.user ? <HeroSection /> : <LoginButton />}
+        {jwt ? <HeroSection /> : <ConnectButtonComponent />}
       </main>
     </div>
     // </div>

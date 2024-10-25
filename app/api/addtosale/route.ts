@@ -10,7 +10,7 @@ export async function POST(req: Request) {
         price: data.price,
         coverImage: data.coverImageKey,
         description: data.description,
-        userId: data.userId,
+        userAddress: data.userAddress,
         image: data.imageKeysResponse.imageKeys,
         walletAddress: data.walletAddress,
         productFiles: {

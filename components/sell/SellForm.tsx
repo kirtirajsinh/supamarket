@@ -4,7 +4,6 @@ import React, { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,6 +23,7 @@ import { Progress } from "@/components/ui/progress";
 import { X, Upload, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { useActiveAccount } from "thirdweb/react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -55,8 +55,6 @@ const formSchema = z.object({
       (files) => files.length <= 5,
       "You can upload a maximum of 5 images"
     ),
-  walletAddress: z.string().min(2, "Address must have at least 2 characters"),
-
   coverImage: z
     .instanceof(File)
     .refine(
@@ -70,7 +68,9 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const SellForm = () => {
-  const session = useSession();
+  // const session = useSession();
+  const activeAccount = useActiveAccount();
+
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("details");
   const [progress, setProgress] = useState(0);
@@ -87,7 +87,7 @@ const SellForm = () => {
   });
 
   const onSubmit = async (values: FormValues) => {
-    if (!session.data || !session.data.user?.id) {
+    if (!activeAccount?.address || !activeAccount) {
       toast({
         title: "Authentication Error",
         description: "You must be logged in to submit a product.",
@@ -108,9 +108,8 @@ const SellForm = () => {
       formData.append(`images`, image);
     });
     formData.append("price", values.price.toString());
-    formData.append("userId", session.data.user.id);
+    formData.append("userId", activeAccount?.address);
     formData.append("coverImage", values.coverImage);
-    formData.append("walletAddress", values.walletAddress);
 
     Array.from(formData.entries()).forEach(([key, value]) => {
       console.log(`${key}: ${value}`); // Log key-value pairs of formData
@@ -146,11 +145,11 @@ const SellForm = () => {
           title: values.title,
           description: values.description,
           price: values.price,
-          userId: session.data.user.id,
+          userAddress: activeAccount?.address,
           productFileKey,
           coverImageKey,
           imageKeysResponse,
-          walletAddress: values.walletAddress,
+          walletAddress: activeAccount?.address,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -291,25 +290,7 @@ const SellForm = () => {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="walletAddress"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Wallet Address</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter your Wallet Address"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Enter your wallet address to receive payments
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
                   <FormField
                     control={form.control}
                     name="price"

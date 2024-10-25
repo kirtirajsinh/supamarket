@@ -90,9 +90,6 @@ const ProductDisplay = ({ product }: { product: Product }) => {
                     {product.createdAt.toLocaleDateString()}
                   </li>
                   <li>
-                    <strong>User ID:</strong> {product.userId}
-                  </li>
-                  <li>
                     <strong>Wallet Address:</strong> {product.walletAddress}
                   </li>
                 </ul>
