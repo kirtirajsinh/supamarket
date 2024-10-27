@@ -10,15 +10,16 @@ import {
   logout,
 } from "@/app/api/actions/auth";
 import { inAppWallet, createWallet } from "thirdweb/wallets";
-import { defineChain } from "thirdweb";
+// import { defineChain } from "thirdweb";
+import { optimism, base, baseSepolia } from "thirdweb/chains";
 
-const polygon = defineChain({
-  id: 137,
-});
+// const polygon = defineChain({
+//   id: 137,
+// });
 
-const base = defineChain({
-  id: 84531,
-});
+// const base = defineChain({
+//   id: 84531,
+// });
 
 const wallets = [
   inAppWallet({
@@ -44,7 +45,7 @@ const ConnectButtonComponent: NextPage = () => {
         label: "Login",
         className: "text-xl font-bold  hover:shadow-lg hover:-translate-y-1",
       }}
-      chains={[polygon, base]}
+      chains={[optimism, base, baseSepolia]}
       auth={{
         isLoggedIn: async (address) => {
           console.log("checking if logged in!", { address });
