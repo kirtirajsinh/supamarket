@@ -42,6 +42,8 @@ model Product {
   User                   User?                  @relation(fields: [userAddress], references: [address])
   userAddress            String?
   walletAddress          String
+  chainId                Int?
+  chainName              String?
 }
 
 model ProductFile {
