@@ -4,7 +4,6 @@ import {
 } from "@coinbase/onchainkit/frame";
 import { NextResponse } from "next/server";
 import { parseEther } from "viem";
-import { baseSepolia } from "viem/chains";
 import { getProduct } from "../../actions/getproduct";
 
 export async function POST(req: Request) {
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
 
     if (productData) {
       const txData: FrameTransactionResponse = {
-        chainId: `eip155:${baseSepolia.id}`,
+        chainId: `eip155:${productData.chainId ?? 84532}`,
         method: "eth_sendTransaction",
         params: {
           abi: [],
