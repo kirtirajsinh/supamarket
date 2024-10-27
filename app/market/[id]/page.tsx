@@ -25,10 +25,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     console.log(error);
   }
 
+  console.log(product, "product from metadata");
+
   const frameMetadata = getFrameMetadata({
     buttons: [
       {
-        label: `${product?.price} Ξ`,
+        label: `${product?.price} Ξ ${product?.chainName}`,
         action: "tx",
         target: `${NEXT_PUBLIC_URL}/api/frame/transaction?productId=${id}`,
         postUrl: `${NEXT_PUBLIC_URL}/api/frame/tx-success`,

@@ -24,6 +24,7 @@ import { X, Upload, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useActiveAccount } from "thirdweb/react";
+import { base, baseSepolia, optimism } from "viem/chains";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -63,6 +64,8 @@ const formSchema = z.object({
     )
     .refine((file) => file.size <= MAX_FILE_SIZE, "Max file size is 5MB"),
   price: z.number().positive("Price must be a positive number"),
+  chainId: z.number().min(1, "Please select a chain"),
+  chainName: z.string().min(1, "Please select a chain"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -74,6 +77,7 @@ const SellForm = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("details");
   const [progress, setProgress] = useState(0);
+  const [isUpLoading, setIsUpLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<FormValues>({
@@ -82,6 +86,8 @@ const SellForm = () => {
       title: "",
       description: "",
       images: [],
+      chainId: baseSepolia.id,
+      chainName: baseSepolia.name,
     },
     mode: "onChange",
   });
@@ -97,6 +103,7 @@ const SellForm = () => {
     }
 
     console.log("Form Data:", values);
+    setIsUpLoading(true);
 
     setProgress(50);
 
@@ -110,10 +117,12 @@ const SellForm = () => {
     formData.append("price", values.price.toString());
     formData.append("userId", activeAccount?.address);
     formData.append("coverImage", values.coverImage);
+    formData.append("chainId", values.chainId.toString());
+    formData.append("chainName", values.chainName);
 
-    Array.from(formData.entries()).forEach(([key, value]) => {
-      console.log(`${key}: ${value}`); // Log key-value pairs of formData
-    });
+    // Array.from(formData.entries()).forEach(([key, value]) => {
+    //   console.log(`${key}: ${value}`); // Log key-value pairs of formData
+    // });
 
     try {
       // Upload Product File to r2
@@ -150,6 +159,8 @@ const SellForm = () => {
           coverImageKey,
           imageKeysResponse,
           walletAddress: activeAccount?.address,
+          chainId: values.chainId,
+          chainName: values.chainName,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -170,6 +181,7 @@ const SellForm = () => {
       form.reset();
       router.push("/market");
       setActiveTab("details");
+      setIsUpLoading(false);
     } catch (error) {
       console.error("Error uploading product:", error);
       toast({
@@ -177,8 +189,10 @@ const SellForm = () => {
         description: "Failed to upload product. Please try again.",
         variant: "destructive",
       });
+      setIsUpLoading(false);
     } finally {
       setProgress(0);
+      setIsUpLoading(false);
     }
   };
 
@@ -290,31 +304,77 @@ const SellForm = () => {
                       </FormItem>
                     )}
                   />
+                  <div className="flex gap-4">
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="0.005"
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(parseFloat(e.target.value) || 0);
+                              }}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Set the Price of your Product in Eth
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="chainId"
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          <FormLabel>Network</FormLabel>
+                          <FormControl>
+                            <select
+                              className="w-full p-2 border rounded-md"
+                              {...field}
+                              onChange={(e) => {
+                                const selectedChainId = parseInt(
+                                  e.target.value
+                                );
+                                field.onChange(selectedChainId);
 
-                  <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Price</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="0.005"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(parseFloat(e.target.value) || 0)
-                            }
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Set the Price of your Product in Eth on 🔵 Base
-                          testnet
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                                // set chain Name
+                                let chainName = "";
+                                switch (selectedChainId) {
+                                  case base.id:
+                                    chainName = base.name;
+                                    break;
+                                  case baseSepolia.id:
+                                    chainName = baseSepolia.name;
+                                    break;
+                                  case optimism.id:
+                                    chainName = optimism.name;
+                                    break;
+                                }
+                                form.setValue("chainName", chainName);
+                              }}
+                            >
+                              <option value={base.id}>Base</option>
+                              <option value={baseSepolia.id}>
+                                Base Sepolia
+                              </option>
+                              <option value={optimism.id}>Optimism</option>
+                            </select>
+                          </FormControl>
+                          <FormDescription>
+                            Select the network for your product
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               </TabsContent>
               <TabsContent value="images">
@@ -488,7 +548,7 @@ const SellForm = () => {
             {isTabComplete("details") &&
               isTabComplete("images") &&
               isTabComplete("file") && (
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" disabled={isUpLoading}>
                   Submit Product
                 </Button>
               )}

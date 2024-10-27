@@ -13,6 +13,8 @@ export async function POST(req: Request) {
         userAddress: data.userAddress,
         image: data.imageKeysResponse.imageKeys,
         walletAddress: data.walletAddress,
+        chainId: data.chainId,
+        chainName: data.chainName,
         productFiles: {
           create: {
             fileKey: data.productFileKey,
