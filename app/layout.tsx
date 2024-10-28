@@ -37,8 +37,7 @@ export default async function RootLayout({
         <ThirdwebProviderLayout>
           <div className="min-h-screen flex flex-col">
             <NavBar />
-            <main className="flex-grow container mx-auto px-4 py-8 sm:py-32">
-              {/* The py-16 adds consistent padding between the navbar and content */}
+            <main className="flex-grow container mx-auto px-4 pt-24 sm:pt-32">
               {children}
             </main>
           </div>
